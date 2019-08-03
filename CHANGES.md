@@ -1,8 +1,103 @@
 # Changelog
 
+## 5.0.0 (Unreleased)
+- BOSH support has been moved to a plugin.
+- Support for XEP-0410 to check whether we're still present in a room
+- Initial support for the [CredentialsContainer](https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer) web API
+- Allow for synchronous events. When a synchronous event is fired, Converse will
+  wait for all promises returned by the event's handlers to finish before continuing.
+- Properly handle message correction being received before the corrected message
+- Groupchat default configuration now supports `list-multi` fields
+- Bugfix: Don't set `muc_domain` for roomspanel if `locked_muc_domain` is `true`.
+- Bugfix: Modal auto-closes when you open it for a second time.
+- Take roster nickname into consideration when rendering messages and chat headings.
+- Hide the textarea when a user is muted in a groupchat.
+- Don't restore a BOSH session without knowing the JID
+- In the `/help` menu, only show allowed commands
+- Message deduplication bugfixes and improvements
+- Continuously retry (in 2s intervals) to fetch login credentials (via [credentials_url](https://conversejs.org/docs/html/configuration.html#credentials-url)) in case of failure
+- Replace `moment` with [DayJS](https://github.com/iamkun/dayjs).
+- New config option [auto_focus](https://conversejs.org/docs/html/configuration.html#auto-focus)
+- New config option [clear_messages_on_reconnection](https://conversejs.org/docs/html/configuration.html#clear-messages-on-reconnection)
+- New config option [enable_smacks](https://conversejs.org/docs/html/configuration.html#enable-smacks)
+- New config option [message_limit](https://conversejs.org/docs/html/configuration.html#message-limit)
+- New config option [muc_fetch_members](https://conversejs.org/docs/html/configuration.html#muc-fetch-members)
+- New config option [muc_mention_autocomplete_min_chars](https://conversejs.org/docs/html/configuration.html#muc-mention-autocomplete-min-chars)
+- New config option [muc_show_join_leave_status](https://conversejs.org/docs/html/configuration.html#muc-show-join-leave-status)
+- New config option [singleton](https://conversejs.org/docs/html/configuration.html#singleton)
+  By setting this option to `false` and `view_mode` to `'embedded'`, it's now possible to
+  "embed" the full app and not just a single chat. To embed just a single chat, it's now
+  necessary to explicitly set `singleton` to `true`.
+- Re-add the previously removed config option [keepalive](https://conversejs.org/docs/html/configuration.html#keepalive)
+- New event: [chatBoxBlurred](https://conversejs.org/docs/html/api/-_converse.html#event:chatBoxBlurred)
+- New event: [chatReconnected](https://conversejs.org/docs/html/api/-_converse.html#event:chatReconnected)
+- #316: Add support for XEP-0198 Stream Management
+- #1071: x clear cross of same size as text
+- #1142: Up/down arrow shouldn't erase current message
+- #1196: Use alternative connection method upon connfail
+- #1296: `embedded` view mode shows `chatbox-navback` arrow in header
+- #1330: Missing room name in MUC invitation popup
+- #1445: Participants list uses big font in embedded mode
+- #1455: Avatar in controlbox status-view not updated
+- #1465: When highlighting a roster contact, they're incorrectly shown as online
+- #1476: Support OMEMO on by default for chats via a config variable
+- #1494: Trim whitespace around messages
+- #1495: Mentions should always include a URI attribute
+- #1502: Fatal error when using prebind
+- #1524: OMEMO libsignal-protocol.js Invalid signature
+- #1532: Converse reloads on enter pressed in the filter box
+- #1538: Allow adding self as contact
+- #1550: Legitimate carbons being blocked due to erroneous forgery check
+- #1554: Room auto-configuration broke if the config form contained fields with type `fixed`
+- #1558: `this.get` is not a function error when `forward_messages` is set to `true`.
+- #1561: Don't call `clear` on local or session storage
+- #1572: In `fullscreen` view mode the top is cut off on iOS
+- #1575: MUC invitation autocomplete list doesn't appear
+- #1576: Converse gets stuck with spinner when logging out with `auto_login` set to `true`
+- #1579: Trim spaces at the beginning and end of a JID (when adding contact)
+- #1585: Upload files by pasting from clipboard
+- #1586: Not possible to kick someone with a space in their nickname
+- Bugfix: "Cannot read property 'parentElement' of null" in shadow dom
+- New config setting [show_profile](https://conversejs.org/docs/html/configuration.html#show_profile)
+
+### Breaking changes
+
+- The minimum required NodeJS version for making builds is now 8.9.0
+- Rename `muc_disable_moderator_commands` to [muc_disable_slash_commands](https://conversejs.org/docs/html/configuration.html#muc-disable-slash-commands).
+- `_converse.api.archive.query` now returns a Promise instead of accepting a callback functions.
+- `_converse.api.disco.supports` now returns a Promise which resolves to a Boolean instead of an Array.
+- The `forward_messages` config option (which was set to `false` by default) has been removed.
+  Use [message_carbons](https://conversejs.org/docs/html/configuration.html#message-carbons) instead.
+- Remove the `keepalive` configuration setting. It is now always implicitly `true`.
+- Remove the `expose_rid_and_sid` configuration setting.
+- A `prebind_url` is now mandatory when setting `authentication` to `prebind`.
+  It's no longer possible to pass in `rid` and `sid` values to `converse.initialize.
+- Removed events `statusChanged` and `statusMessageChanged`. Instead, you can
+  listen on the `change:status` or `change:status\_message` events on
+  `_converse.xmppstatus`.
+
+### API changes
+
+- `_converse.chats.open` and `_converse.rooms.open` now take a `force`
+  parameter to force maximizing (in `overlayed` view mode) or bringing a
+  background chat into the foreground (in `fullscreen` view mode). Previously
+  this was the default behavior.
+- `_converse.api.emit` has been removed in favor of [\_converse.api.trigger](https://conversejs.org/docs/html/api/-_converse.api.html#.trigger)
+- `_converse.updateSettings` has been removed in favor of [\_converse.api.settings.update](https://conversejs.org/docs/html/api/-_converse.api.settings.html#.update)
+- `_converse.api.roster.get` now returns a promise.
+- New API method [\_converse.api.disco.features.get](https://conversejs.org/docs/html/api/-_converse.api.disco.features.html#.get)
+- New API method [\_converse.api.connection.reconnect](https://conversejs.org/docs/html/api/-_converse.api.connection.html#.reconnect)
+
 ## 4.2.0 (2019-04-04)
 
-- Updated translation: lt
+**Note:** This release introduces a hard requirement on [MAM:2](https://xmpp.org/extensions/xep-0313.html),
+specifically the requirement that the MAM archive ID matches the [XEP-0359 stanza-id](https://xmpp.org/extensions/xep-0359.html).
+Patches intended to make Converse work with MAM:1 will cause problems and
+unexpected behaviour due to the above requirement, which is not met with MAM:1.
+This will affect OpenFire users who use the [monitoring plugin](https://www.igniterealtime.org/projects/openfire/plugin-archive.jsp?plugin=monitoring)
+version 1.7.0 and below. You're advised to stay on Converse version 4.1.2 until an update to that plugin has been released.
+
+- Updated translation: af, cz, de, es, gl, he, lt, nl, nl_BE, ru
 - Upgrade to Backbone 1.4.0, Strophe 1.3.2 and Jasmine 2.99.2
 - Remove dependency on (our fork of) Awesomplete
 - Prevent user from adding themselves as contact
@@ -81,7 +176,7 @@
 - #1334 Force avatar refetch when receiving `vcard-temp:x:update`
 - #1337 `send_chat_state_notifications` doesn't work in MUCs
 - #1353 Message Delivery Receipts not working because of the message "type" attribute
-- #1356 Make triangle icon usable 
+- #1356 Make triangle icon usable
 - #1374 Can't load embedded chat when changing `view_mode` between page reloads
 - #1376 Fixed some alignment issues in the sidebar
 - #1378 Message Delivery Receipts were being sent for carbons and own messages
